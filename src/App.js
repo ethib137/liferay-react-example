@@ -1,8 +1,26 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+
+import {getUsers} from './request';
 
 function App() {
+	const [users, setUsers] = useState([]);
+
+	useEffect(() => {
+		getUsers().then(res => {
+			setUsers(res.items);
+		})
+	}, []);
+
 	return (
-		<h1>Hello World</h1>
+		<div>
+			<h1>Users:</h1>
+
+			{users.map(user => (
+				<div key={user.id}>
+					{user.givenName} {user.familyName}
+				</div>
+			))}
+		</div>
 	);
 }
 
