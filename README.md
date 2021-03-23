@@ -1,5 +1,7 @@
 # Liferay React Example
 
+## Setting Up Dependencies
+
 Developed with:
 ```
 node: v10.16.3
@@ -11,15 +13,85 @@ liferay-js: 2.23.0
 1. Install node & npm (https://nodejs.org/en/download/)
 2. Install yo `npm install -g yo`
 3. Install liferay-js `npm install -g generator-liferay-js`
-4. Run the Liferay JS Generator: `yo liferay-js` and follow the prompts.
 
-At this stage you already have a working Liferay JS widget. You can run `npm run deploy` to deploy it.
+## Using the Liferay JS Generator
 
-You can find the widget under the Widgets menu in the Sample category and add the widget to any page in your Liferay instance. 
+1. Run the Liferay JS Generator: `yo liferay-js` and follow the prompts:
+
+	* What type of project do you want to create? `React Widget`
+	* What name shall I give to the folder hosting your project? `my-react-app`
+	* What is the human readable description of your project? `My React App`
+	* Do you want to add localization support? `Y`
+	* Do you want to add configuration support? `Y`
+	* Under which category should your widget be listed? `category.sample`
+	* Do you have a local installation of Liferay for development? `N` // If you are using Docker, answer no.
+	* Do you want to generate sample code? `N`
+
+At this stage you already have a working Liferay JS widget. You can run now build & deploy it and add it to a page.
+
+## How to Build & Deploy
+
+The steps to deploy your widget depend on where you are deploying it to. This tutorial will explain how to deploy to a Docker container and to a local Liferay bundle.
+
+### Docker
+
+1. Before we deploy to our Docker container we need to build our widget. We can build the widget using the following command:
+
+```
+npm run build
+```
+
+You can see what this command is actually doing by looking at the `package.json` file. You can find the build script under the scripts block.
+
+The build command will compile your code and create a `.jar` file in the `dist/` directory.
+
+2. In order to deploy to docker you need to know the `Container ID` for your Liferay Docker container. You can find this by running the command:
+
+```
+docker ps
+```
+
+This will list all of the containers that are currently running. Find your Liferay container and the `Container ID` will be in the first column.
+
+3. With our `Container ID` we can deploy our newly built module using the `docker cp` command.
+
+```
+docker cp dist/[my-app.jar] [container]:/opt/liferay/deploy
+```
+
+### Local Liferay Bundle
+
+If you have a local Liferay bundle and you're not using Docker, then you should have answered **Yes** to the question: Do you have a local installation of Liferay for development?
+
+If you answered **Yes** you would have then been asked for the location of your local bundle. This location is stored in the `.npmbuildrc` file. If you want to deploy to a different bundle you can change the path in that file.
+
+1. You can now run the following command to build and deploy your module:
+
+```
+npm run deploy
+```
+
+You can see what this command is actually doing by looking at the `package.json` file. You can find the deploy script under the scripts block. Notice that it runs the `build` command as part of the `deploy` command.
+
+## Adding your Widget to a Page
+
+To add it to to a page navigate to your Liferay instance and click on the edit icon on the page you want to add it to.
+
+![Edit Page](images/edit-page.png)
+
+You can find the widget under the Widgets menu in the Sample category and drag the widget onto the page. 
+
+![Add to a Page](images/add-to-page.png)
+
+Currently our widget doesn't display anything so we will update the widget in the next steps.
+
+## Updating Dependencies
 
 Next we need to update our babel dependencies.
 
-5. In the `package.json` replace:
+> NOTE: If at any time you have an issue with getting things working after copying code snippets, you can look at this repo which is a completed version of this tutorial. The git history can also provide helpful hints for how it was created.
+
+1. In the `package.json` replace:
 ```
 "babel-cli": "6.26.0",
 "babel-preset-env": "1.7.0",
@@ -34,7 +106,7 @@ with
 "@babel/preset-react": "^7.7.4"
 ```
 
-6. Then replace the contents of the `.babelrc` file with the following:
+2. Then replace the contents of the `.babelrc` file with the following:
 ```
 {
 	"presets": ["@babel/preset-env", "@babel/preset-react"]
@@ -43,11 +115,23 @@ with
 
 This will allow use of additional React features such as [hooks](https://reactjs.org/docs/hooks-intro.html).
 
-7. To make sure we have updated our dependencies, remove the `node_modules` directory `rm -fr node_modules` and run `npm install`. This will update our `package-lock.json` file.
+3. To make sure we have updated our dependencies, remove the `node_modules` directory:
+
+```
+rm -fr node_modules
+```
+
+4. Then run `npm install` in order to update our `package-lock.json` file:
+
+```
+npm install
+```
 
 We can now create our first React component.
 
-8. In src create a new file: `App.js` with the following contents:
+## Creating a React Component
+
+1. In src create a new file: `App.js` with the following contents:
 ```
 import React from 'react';
 
@@ -62,7 +146,7 @@ export default App;
 
 We can include this component in our entry file `index.js`.
 
-9. At the top of `index.js` add the following imports:
+2. At the top of `index.js` add the following imports:
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -70,7 +154,9 @@ import ReactDOM from 'react-dom';
 import App from './App';
 ```
 
-10. Then replace the export statement in `index.js` with the following:
+The first two import statements are importing dependencies that have been included from our `package.json` file. The last import statement is importing the React component we just created. Notice that we import it using a relative path.
+
+3. Then replace the export statement in `index.js` with the following:
 ```
 export default function main({portletNamespace, contextPath, portletElementId, configuration}) {
 	ReactDOM.render(
@@ -80,22 +166,22 @@ export default function main({portletNamespace, contextPath, portletElementId, c
 }
 ```
 
-After saving your changes you can deploy the app to see a simple app that prints out "Hello World".
+4. After saving your changes you can build & deploy the app to see a simple app that prints out "Hello World".
 
 ## React Hooks
 
-Read about the React Hooks [here](https://reactjs.org/docs/hooks-overview.html#state-hook).
+Read about React Hooks [here](https://reactjs.org/docs/hooks-overview.html#state-hook).
 
 The first React Hook we will use is the `useState` hook. Be sure to read about it before you begin. `useState` returns a pair: the current state value and a function that lets you update it. The only argument to useState is the initial state. We will use this hook to create a counter to see the value provided by React's state managment.
 
-11. To use the `useState` hook, we have to import it. Change the line importing React in App.js to the following:
+1. To use the `useState` hook, we have to import it. Change the line importing React in App.js to the following:
 ```
 import React, {useState} from 'react';
 ```
 
 After adding this import we can make use of `useState` in our component.
 
-12. Replace the body of our App function in `App.js` with the following:
+2. Replace the body of our App function in `App.js` with the following:
 ```
 const [count, setCount] = useState(0);
 
@@ -110,13 +196,15 @@ return (
 
 This block of code creates a `count` variable that will be updated when we call the function `useCount`. We are providing it an initial value of `0`. We've modified our return statement to include a button that when clicked will call `setCount` and whose label displays the count.
 
+3. After saving your changes you can build & deploy the app to see your changes.
+
 ## Calling APIs
 
 We can call APIs in Liferay using the function `Liferay.Util.fetch` which is a simple wrapper around the web `fetch` api that handles authentication within Liferay.
 
 Let's create a call to Liferay's APIs to return a list of users.
 
-13. Create a new file `src/request.js` with the following contents:
+1. Create a new file `src/request.js` with the following contents:
 ```
 export function getUsers() {
 	return Liferay.Util.fetch(
@@ -126,7 +214,7 @@ export function getUsers() {
 }
 ```
 
-14. Replace the content of `App.js` with the following:
+2. Replace the content of `App.js` with the following:
 ```
 import React, {useEffect, useState} from 'react';
 
@@ -163,19 +251,29 @@ This function returns a [promise](https://developer.mozilla.org/en-US/docs/Web/J
 
 In our return statement we are iterating through our users using the [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) function and render the name of each user inside a div.
 
-Go ahead and deploy this and see how it works.
+3. After saving your changes you can build & deploy the app to see your changes.
 
 We just saw how to get data from Liferay, but how do we get data from Liferay. Next let's create a component to add a user to Liferay.
 
+## Using Clay
+
 For this we are also going to use a pre-built React component from [Clay](https://clayui.com/docs/components/input.html).
 
-15. To use a Clay component we first have to install it's npm module by running `npm install @clayui/form`. 
+1. To use a Clay component we first have to install it's npm module. In this case, we want to use the Clay form component, so we can install it using the following command:
 
-After installing we can use it in our component by importing it like this: `import ClayForm, {ClayInput} from '@clayui/form';`.
+```
+npm install @clayui/form
+``` 
+
+After installing we can use it in our component by importing it in the top of our file like this:
+
+```
+import ClayForm, {ClayInput} from '@clayui/form';
+``` 
 
 To add a user we need to make another api call.
 
-16. Add the following method to the `request.js` file:
+2. Add the following method to the `request.js` file:
 ```
 export function addUser({emailAddress, familyName, givenName, userName}) {
 	const data = {
@@ -202,7 +300,7 @@ export function addUser({emailAddress, familyName, givenName, userName}) {
 }
 ```
 
-17. Create a new file `src/AddUserForm.js` with the following contents:
+3. Create a new file `src/AddUserForm.js` with the following contents:
 ```
 import React, {useCallback, useEffect, useState} from 'react';
 import ClayForm, {ClayInput} from '@clayui/form';
@@ -293,7 +391,7 @@ function AddUserForm() {
 export default AddUserForm;
 ```
 
-17. Finally, replace the contents of `App.js` with the following:
+4. Finally, replace the contents of `App.js` with the following:
 ```
 import React, {useEffect, useState} from 'react';
 
@@ -331,7 +429,9 @@ function App() {
 export default App;
 ```
 
-After deploying you will now have an app that can add users in addition to listing existing users. All the fields in the form are required, so if you don't add all of them you will end up with some javascript errors. We have not added the ability to automatically update the user list, so you will need to refresh the page after creating a user to see the new user in your list.
+5. After saving your changes you can build & deploy the app to see your changes.
+
+You now have an app that can add users in addition to listing existing users. All the fields in the form are required, so if you don't add all of them you will end up with some javascript errors. We have not added the ability to automatically update the user list, so you will need to refresh the page after creating a user to see the new user in your list.
 
 ## Topics to Cover
 
