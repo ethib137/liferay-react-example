@@ -7,7 +7,7 @@ Developed with:
 node: v10.16.3
 npm: 6.9.0
 yo: 3.1.1
-liferay-js: 2.23.0
+liferay-js: 2.24.3
 ```
 
 1. Install node & npm (https://nodejs.org/en/download/)
@@ -79,57 +79,17 @@ To add it to to a page navigate to your Liferay instance and click on the edit i
 
 ![Edit Page](images/edit-page.png)
 
-You can find the widget under the Widgets menu in the Sample category and drag the widget onto the page. 
+You can find the widget under the Widgets menu in the Sample category and drag the widget onto the page.
 
 ![Add to a Page](images/add-to-page.png)
 
 Currently our widget doesn't display anything so we will update the widget in the next steps.
 
-## Updating Dependencies
-
-Next we need to update our babel dependencies.
-
-> NOTE: If at any time you have an issue with getting things working after copying code snippets, you can look at this repo which is a completed version of this tutorial. The git history can also provide helpful hints for how it was created.
-
-1. In the `package.json` replace:
-```
-"babel-cli": "6.26.0",
-"babel-preset-env": "1.7.0",
-"babel-preset-react": "6.24.1",
-"babel-loader": "7.1.5"
-```
-with
-```
-"@babel/cli": "^7.7.5",
-"@babel/core": "^7.7.5",
-"@babel/preset-env": "^7.7.6",
-"@babel/preset-react": "^7.7.4"
-```
-
-2. Then replace the contents of the `.babelrc` file with the following:
-```
-{
-	"presets": ["@babel/preset-env", "@babel/preset-react"]
-}
-```
-
-This will allow use of additional React features such as [hooks](https://reactjs.org/docs/hooks-intro.html).
-
-3. To make sure we have updated our dependencies, remove the `node_modules` directory:
-
-```
-rm -fr node_modules
-```
-
-4. Then run `npm install` in order to update our `package-lock.json` file:
-
-```
-npm install
-```
-
 We can now create our first React component.
 
 ## Creating a React Component
+
+> NOTE: If at any time you have an issue with getting things working after copying code snippets, you can look at this repo which is a completed version of this tutorial. The git history can also provide helpful hints for how it was created.
 
 1. In src create a new file: `App.js` with the following contents:
 ```
@@ -263,13 +223,13 @@ For this we are also going to use a pre-built React component from [Clay](https:
 
 ```
 npm install @clayui/form
-``` 
+```
 
 After installing we can use it in our component by importing it in the top of our file like this:
 
 ```
 import ClayForm, {ClayInput} from '@clayui/form';
-``` 
+```
 
 To add a user we need to make another api call.
 
