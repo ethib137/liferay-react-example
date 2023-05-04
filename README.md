@@ -154,7 +154,7 @@ return (
 );
 ```
 
-This block of code creates a `count` variable that will be updated when we call the function `useCount`. We are providing it an initial value of `0`. We've modified our return statement to include a button that when clicked will call `setCount` and whose label displays the count.
+This block of code creates a `count` variable that will be updated when we call the function `setCount`. We are providing it an initial value of `0`. We've modified our return statement to include a button that when clicked will call `setCount` and whose label displays the count.
 
 3. After saving your changes you can build & deploy the app to see your changes.
 
